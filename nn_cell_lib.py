@@ -107,11 +107,11 @@ class MLP(object):
 
                     if activation and activation[ii] is not None:
                         if activation[ii] == 'relu':
-                            act_func[ii] = tf.nn.relu
+                            self.act_func[ii] = tf.nn.relu
                         elif activation[ii] == 'sigmoid':
-                            act_func[ii] = tf.sigmoid
+                            self.act_func[ii] = tf.sigmoid
                         elif activation[ii] == 'tanh':
-                            act_func[ii] = tf.tanh
+                            self.act_func[ii] = tf.tanh
                         else:
                             raise ValueError('Non supported activation method!')
 
@@ -482,11 +482,11 @@ class MLP_cluster(object):
 
                     if activation and activation[ii] is not None:
                         if activation[ii] == 'relu':
-                            act_func[ii] = tf.nn.relu
+                            self.act_func[ii] = tf.nn.relu
                         elif activation[ii] == 'sigmoid':
-                            act_func[ii] = tf.sigmoid
+                            self.act_func[ii] = tf.sigmoid
                         elif activation[ii] == 'tanh':
-                            act_func[ii] = tf.tanh
+                            self.act_func[ii] = tf.tanh
                         else:
                             raise ValueError('Non supported activation method!')
 

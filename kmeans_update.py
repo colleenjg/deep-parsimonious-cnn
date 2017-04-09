@@ -13,9 +13,9 @@ def pdist(x, y):
     """
 
     x2 = tf.tile(tf.expand_dims(tf.reduce_sum(tf.square(x), 1), 1),
-                 tf.pack([1, tf.shape(y)[0]]))
+                 tf.stack([1, tf.shape(y)[0]]))
     y2 = tf.tile(tf.transpose(tf.expand_dims(tf.reduce_sum(
-        tf.square(y), 1), 1)), tf.pack([tf.shape(x)[0], 1]))
+        tf.square(y), 1), 1)), tf.stack([tf.shape(x)[0], 1]))
     xy = tf.matmul(x, y, transpose_b=True)
     return x2 - 2 * xy + y2
 

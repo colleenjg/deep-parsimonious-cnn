@@ -15,11 +15,8 @@ import cPickle as pickle
 from docopt import docopt
 from mini_batch_iter import MiniBatchIterator
 from kmeans_plus_plus import get_update_cluster_idx
-from CUB_input import read_CUB
 from CIFAR_input import read_CIFAR10, read_CIFAR100
 from CIFAR_models import baseline_model, clustering_model
-from AlexNet import load_caffe_model, build_AlexNet_CUB
-from AlexNet_clustering import build_AlexNet_CUB_clustering
 
 
 def update_cluster_centers(sess, input_data, model_ops, hist_label, train_iterator, param, hist_thresh=10):
@@ -60,10 +57,6 @@ def update_cluster_centers(sess, input_data, model_ops, hist_label, train_iterat
             feed_data = {model_ops['input_images']: bat_imgs,
                          model_ops['input_eta']: param['eta']}
 
-            if param['dataset_name'] == 'CUB':
-                feed_data[model_ops['dropout_rate']] = param['dropout_rate']
-                feed_data[model_ops['phase_train']] = True
-
             embeddings = sess.run(model_ops['embeddings'], feed_dict=feed_data)
 
             # generate new cluster center
@@ -90,19 +83,6 @@ def update_cluster_centers(sess, input_data, model_ops, hist_label, train_iterat
                 var_names += idx_sample[:num_layer_cnn]
                 var_names += idx_center[num_layer_cnn:]
                 var_names += idx_sample[num_layer_cnn:]
-            elif param['dataset_name'] == 'CUB':
-                num_layer_reg = param['num_layer_reg']
-
-                var_keys += [model_ops['dropout_rate'],
-                             model_ops['phase_train']]
-                var_keys += [model_ops['c_reset_idx'][ii]
-                             for ii in xrange(num_layer_reg)]
-                var_keys += [model_ops['s_reset_idx'][ii]
-                             for ii in xrange(num_layer_reg)]
-
-                var_names += [param['dropout_rate'], True]
-                var_names += idx_center[:num_layer_reg]
-                var_names += idx_sample[:num_layer_reg]
             else:
                 raise ValueError('Unsupported dataset name!')
 
@@ -143,8 +123,6 @@ def main():
             param['num_cluster'] = param[
                 'num_cluster_cnn'] + param['num_cluster_mlp']
             num_layer_reg = param['num_layer_cnn'] + param['num_layer_mlp']
-        elif param['dataset_name'] == 'CUB':
-            num_layer_reg = len(np.nonzero(np.array(param['num_cluster']))[0])
         else:
             raise ValueError('Unsupported dataset name!')
 
@@ -159,10 +137,6 @@ def main():
         input_data = read_CIFAR10(param['data_folder'])
     elif param['dataset_name'] == 'CIFAR100':
         input_data = read_CIFAR100(param['data_folder'])
-    elif param['dataset_name'] == 'CUB':
-        param['denom_const'] = 1.0
-        input_data = read_CUB(param['train_list_file'], param['test_list_file'])
-        input_data['mean_img'] = pickle.load(open(param['mean_img'], 'rb'))
     else:
         raise ValueError('Unsupported dataset name!')
     print 'Reading data done!'
@@ -173,13 +147,6 @@ def main():
             model_ops = baseline_model(param)
         elif param['model_name'] == 'parsimonious':
             model_ops = clustering_model(param)
-        else:
-            raise ValueError('Unsupported model name!')
-    elif param['dataset_name'] == 'CUB':
-        if param['model_name'] == 'baseline':
-            model_ops = build_AlexNet_CUB(param)
-        elif param['model_name'] == 'parsimonious':
-            model_ops = build_AlexNet_CUB_clustering(param)
         else:
             raise ValueError('Unsupported model name!')
     else:
@@ -218,10 +185,6 @@ def main():
         train_iter_start = param['resume_step']
     else:
         sess.run(tf.initialize_all_variables())
-        if param['dataset_name'] == 'CUB' and param['using_caffe_weights'] == True:
-            caffe_weight = load_caffe_model(
-                param['caffe_model_file'], model_ops)
-            sess.run(model_ops['load_weights'], feed_dict=caffe_weight)
 
     print 'Graph initialization done!'
 
@@ -237,10 +200,6 @@ def main():
             model_ops['input_images']: bat_imgs,
             model_ops['input_labels']: bat_labels
         }
-
-        if param['dataset_name'] == 'CUB':
-            feed_data[model_ops['phase_train']] = True
-            feed_data[model_ops['dropout_rate']] = param['dropout_rate']
 
         # run a batch
         if param['model_name'] == 'baseline':
@@ -323,9 +282,6 @@ def main():
 
                 feed_data[model_ops['input_images']] = bat_imgs
                 feed_data[model_ops['input_labels']] = bat_labels
-
-                if param['dataset_name'] == 'CUB':
-                    feed_data[model_ops['phase_train']] = False
 
                 results = sess.run(val_ops, feed_dict=feed_data)
 

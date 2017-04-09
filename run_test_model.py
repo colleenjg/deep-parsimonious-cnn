@@ -14,11 +14,8 @@ import cPickle as pickle
 
 from docopt import docopt
 from mini_batch_iter import MiniBatchIterator
-from CUB_input import read_CUB
 from CIFAR_input import read_CIFAR10, read_CIFAR100
 from CIFAR_models import baseline_model, clustering_model
-from AlexNet import build_AlexNet_CUB
-from AlexNet_clustering import build_AlexNet_CUB_clustering
 
 
 def main():
@@ -32,10 +29,6 @@ def main():
         input_data = read_CIFAR10(param['data_folder'])
     elif param['dataset_name'] == 'CIFAR100':
         input_data = read_CIFAR100(param['data_folder'])
-    elif param['dataset_name'] == 'CUB':
-        param['denom_const'] = 1.0
-        input_data = read_CUB(param['train_list_file'], param['test_list_file'])
-        input_data['mean_img'] = pickle.load(open(param['mean_img'], 'rb'))
     else:
         raise ValueError('Unsupported dataset name!')
     print 'Reading data done!'
@@ -49,13 +42,6 @@ def main():
             model_ops = baseline_model(param)
         elif param['model_name'] == 'parsimonious':
             model_ops = clustering_model(param)
-        else:
-            raise ValueError('Unsupported model name!')
-    elif param['dataset_name'] == 'CUB':
-        if param['model_name'] == 'baseline':
-            model_ops = build_AlexNet_CUB(param)
-        elif param['model_name'] == 'parsimonious':
-            model_ops = build_AlexNet_CUB_clustering(param)
         else:
             raise ValueError('Unsupported model name!')
     else:
@@ -89,10 +75,6 @@ def main():
             model_ops['input_images']: bat_imgs,
             model_ops['input_labels']: bat_labels
         }
-
-        if param['dataset_name'] == 'CUB':
-            feed_data[model_ops['dropout_rate']] = param['dropout_rate']
-            feed_data[model_ops['phase_train']] = False
 
         results = sess.run(test_ops, feed_dict=feed_data)
 

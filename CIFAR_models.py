@@ -49,7 +49,8 @@ def baseline_model(param):
 
         # compute cross-entropy loss
         CE_loss = tf.reduce_mean(
-            tf.nn.sparse_softmax_cross_entropy_with_logits(logits, input_labels))
+            tf.nn.sparse_softmax_cross_entropy_with_logits(
+                logits=logits, labels=input_labels))
         ops['CE_loss'] = CE_loss
 
         # setting optimization
@@ -155,11 +156,12 @@ def clustering_model(param):
         ops['clustering_ops'] = clustering_ops_cnn + clustering_ops_mlp
         ops['reg_ops'] = reg_ops_cnn + reg_ops_mlp
         ops['reset_ops'] = reset_ops_cnn + reset_ops_mlp
-        reg_term = tf.reduce_sum(tf.pack(ops['reg_ops']))
+        reg_term = tf.reduce_sum(tf.stack(ops['reg_ops']))
 
         # compute cross-entropy loss
         CE_loss = tf.reduce_mean(
-            tf.nn.sparse_softmax_cross_entropy_with_logits(logits, input_labels))
+            tf.nn.sparse_softmax_cross_entropy_with_logits(
+                logits=logits, labels=input_labels))
         ops['CE_loss'] = CE_loss
 
         # setting optimization
