@@ -15,7 +15,7 @@ import cPickle as pickle
 from docopt import docopt
 from mini_batch_iter import MiniBatchIterator
 from CIFAR_input import read_CIFAR10, read_CIFAR100
-from CIFAR_models import baseline_model, clustering_model
+from CIFAR_models import baseline_model, clustering_model, distilled_model
 
 
 def main():
@@ -37,15 +37,17 @@ def main():
     test_op_names = ['scaled_logits']
 
     # build model
-    if param['dataset_name'] == 'CIFAR10' or param['dataset_name'] == 'CIFAR100':
-        if param['model_name'] == 'baseline':
-            model_ops = baseline_model(param)
-        elif param['model_name'] == 'parsimonious':
-            model_ops = clustering_model(param)
-        else:
-            raise ValueError('Unsupported model name!')
-    else:
+    if param['dataset_name'] not in ['CIFAR10', 'CIFAR100']:
         raise ValueError('Unsupported dataset name!')
+
+    if param['model_name'] == 'baseline':
+        model_ops = baseline_model(param)
+    elif param['model_name'] == 'parsimonious':
+        model_ops = clustering_model(param)
+    elif param['model_name'] == 'distilled':
+        model_ops = distilled_model(param)
+    else:
+        raise ValueError('Unsupported model name!')
 
     test_ops = [model_ops[i] for i in test_op_names]
     print 'Building model done!'
@@ -53,8 +55,9 @@ def main():
     # run model
     num_test_img = input_data['test_img'].shape[0]
     max_test_iter = int(math.ceil(num_test_img / param['bat_size']))
-    test_iterator = MiniBatchIterator(idx_start=0, bat_size=param[
-                                      'bat_size'], num_sample=num_test_img, train_phase=False, is_permute=False)
+    test_iterator = MiniBatchIterator(
+        idx_start=0, bat_size=param['bat_size'], num_sample=num_test_img,
+        train_phase=False, is_permute=False)
 
     config = tf.ConfigProto(allow_soft_placement=True)
     sess = tf.Session(config=config)

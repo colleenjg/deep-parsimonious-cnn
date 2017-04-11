@@ -1,7 +1,7 @@
 """run_train_model.py
 
 Usage:
-  run_train_model.py <exp_id>
+  run_train_model.py <exp_id> [<distillation_source>]
 """
 import os
 import time
@@ -16,7 +16,7 @@ from docopt import docopt
 from mini_batch_iter import MiniBatchIterator
 from kmeans_plus_plus import get_update_cluster_idx
 from CIFAR_input import read_CIFAR10, read_CIFAR100
-from CIFAR_models import baseline_model, clustering_model
+from CIFAR_models import baseline_model, clustering_model, distilled_model
 
 
 def update_cluster_centers(sess, input_data, model_ops, hist_label, train_iterator, param, hist_thresh=10):
@@ -66,25 +66,22 @@ def update_cluster_centers(sess, input_data, model_ops, hist_label, train_iterat
             var_keys = [model_ops['input_images']]
             var_names = [feed_data[model_ops['input_images']]]
 
-            if param['dataset_name'] == 'CIFAR10' or param['dataset_name'] == 'CIFAR100':
-                num_layer_cnn = len(param['num_cluster_cnn'])
-                num_layer_mlp = len(param['num_cluster_mlp'])
+            num_layer_cnn = len(param['num_cluster_cnn'])
+            num_layer_mlp = len(param['num_cluster_mlp'])
 
-                var_keys += [model_ops['c_reset_idx_cnn'][ii]
-                             for ii in xrange(num_layer_cnn)]
-                var_keys += [model_ops['s_reset_idx_cnn'][ii]
-                             for ii in xrange(num_layer_cnn)]
-                var_keys += [model_ops['c_reset_idx_mlp'][ii]
-                             for ii in xrange(num_layer_mlp)]
-                var_keys += [model_ops['s_reset_idx_mlp'][ii]
-                             for ii in xrange(num_layer_mlp)]
+            var_keys += [model_ops['c_reset_idx_cnn'][ii]
+                         for ii in xrange(num_layer_cnn)]
+            var_keys += [model_ops['s_reset_idx_cnn'][ii]
+                         for ii in xrange(num_layer_cnn)]
+            var_keys += [model_ops['c_reset_idx_mlp'][ii]
+                         for ii in xrange(num_layer_mlp)]
+            var_keys += [model_ops['s_reset_idx_mlp'][ii]
+                         for ii in xrange(num_layer_mlp)]
 
-                var_names += idx_center[:num_layer_cnn]
-                var_names += idx_sample[:num_layer_cnn]
-                var_names += idx_center[num_layer_cnn:]
-                var_names += idx_sample[num_layer_cnn:]
-            else:
-                raise ValueError('Unsupported dataset name!')
+            var_names += idx_center[:num_layer_cnn]
+            var_names += idx_sample[:num_layer_cnn]
+            var_names += idx_center[num_layer_cnn:]
+            var_names += idx_sample[num_layer_cnn:]
 
             feed_data_reset = dict(zip(var_keys, var_names))
             sess.run(model_ops['reset_ops'], feed_dict=feed_data_reset)
@@ -115,16 +112,13 @@ def main():
             f.write('{}: {}\n'.format(key, value))
 
     if param['model_name'] == 'parsimonious':
-        if param['dataset_name'] == 'CIFAR10' or param['dataset_name'] == 'CIFAR100':
-            param['num_layer_cnn'] = len(
-                [xx for xx in param['num_cluster_cnn'] if xx])
-            param['num_layer_mlp'] = len(
-                [xx for xx in param['num_cluster_mlp'] if xx])
-            param['num_cluster'] = param[
-                'num_cluster_cnn'] + param['num_cluster_mlp']
-            num_layer_reg = param['num_layer_cnn'] + param['num_layer_mlp']
-        else:
-            raise ValueError('Unsupported dataset name!')
+        param['num_layer_cnn'] = len(
+            [xx for xx in param['num_cluster_cnn'] if xx])
+        param['num_layer_mlp'] = len(
+            [xx for xx in param['num_cluster_mlp'] if xx])
+        param['num_cluster'] = param[
+            'num_cluster_cnn'] + param['num_cluster_mlp']
+        num_layer_reg = param['num_layer_cnn'] + param['num_layer_mlp']
 
         param['num_layer_reg'] = num_layer_reg
         hist_label = [np.zeros(xx) if xx is not None else None for xx in param[
@@ -132,25 +126,24 @@ def main():
         reg_val = np.zeros(num_layer_reg)
 
     # read data from file
+    if param['dataset_name'] not in ['CIFAR10', 'CIFAR100']:
+        raise ValueError('Unsupported dataset name!')
+
     param['denom_const'] = 255.0
     if param['dataset_name'] == 'CIFAR10':
         input_data = read_CIFAR10(param['data_folder'])
-    elif param['dataset_name'] == 'CIFAR100':
-        input_data = read_CIFAR100(param['data_folder'])
     else:
-        raise ValueError('Unsupported dataset name!')
+        input_data = read_CIFAR100(param['data_folder'])
+
     print 'Reading data done!'
 
     # build model
-    if param['dataset_name'] == 'CIFAR10' or param['dataset_name'] == 'CIFAR100':
-        if param['model_name'] == 'baseline':
-            model_ops = baseline_model(param)
-        elif param['model_name'] == 'parsimonious':
-            model_ops = clustering_model(param)
-        else:
-            raise ValueError('Unsupported model name!')
+    if param['model_name'] == 'baseline':
+        model_ops = baseline_model(param)
+    elif param['model_name'] == 'parsimonious':
+        model_ops = clustering_model(param)
     else:
-        raise ValueError('Unsupported dataset name!')
+        raise ValueError('Unsupported model name!')
 
     train_op_names = ['train_step', 'CE_loss']
     val_op_names = ['scaled_logits']
@@ -169,17 +162,19 @@ def main():
     num_val_img = input_data['test_img'].shape[0]
     epoch_iter = int(math.ceil(num_train_img / param['bat_size']))
     max_val_iter = int(math.ceil(num_val_img / param['bat_size']))
-    train_iterator = MiniBatchIterator(idx_start=0, bat_size=param[
-                                       'bat_size'], num_sample=num_train_img, train_phase=True, is_permute=True)
-    val_iterator = MiniBatchIterator(idx_start=0, bat_size=param[
-                                     'bat_size'], num_sample=num_val_img, train_phase=False, is_permute=False)
+    train_iterator = MiniBatchIterator(
+        idx_start=0, bat_size=param['bat_size'], num_sample=num_train_img,
+        train_phase=True, is_permute=True)
+    val_iterator = MiniBatchIterator(
+        idx_start=0, bat_size=param['bat_size'], num_sample=num_val_img,
+        train_phase=False, is_permute=False)
 
     saver = tf.train.Saver()
     config = tf.ConfigProto(allow_soft_placement=True)
     sess = tf.Session(config=config)
 
     train_iter_start = 0
-    if param['resume_training'] == True:
+    if param['resume_training']:
         saver.restore(sess, os.path.join(
             param['save_folder'], param['resume_model_name']))
         train_iter_start = param['resume_step']
@@ -217,7 +212,8 @@ def main():
             # deal with drifted clusters
             if (train_iter + 1) % epoch_iter == 0:
                 update_cluster_centers(
-                    sess, input_data, model_ops, hist_label, train_iterator, param)
+                    sess, input_data, model_ops, hist_label, train_iterator,
+                    param)
 
             # get CE/Reg values
             results = sess.run([model_ops['CE_loss']] + model_ops['reg_ops'] +
