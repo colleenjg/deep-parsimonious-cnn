@@ -56,9 +56,9 @@ def main():
 
     # build cumbersome model
     if param_cumb['model_name'] == 'baseline':
-        cumb_model_ops = baseline_model(param)
+        cumb_model_ops = baseline_model(param_cumb)
     elif param_cumb['model_name'] == 'parsimonious':
-        cumb_model_ops = clustering_model(param)
+        cumb_model_ops = clustering_model(param_cumb)
     else:
         raise ValueError('Unsupported cumbersome model')
     cumb_op_names = ['logits']
@@ -125,8 +125,8 @@ def main():
             model_ops['source_model_logits']: source_model_logits
         }
 
-        with tf.variable_scope(dist_var_scope):
-            results = sess.run(train_ops, feed_dict=feed_data)
+        # with tf.variable_scope(dist_var_scope):
+        results = sess.run(train_ops, feed_dict=feed_data)
 
         train_results = {}
         for res, name in zip(results, train_op_names):

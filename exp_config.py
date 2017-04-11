@@ -95,7 +95,7 @@ def CIFAR10_spatial_clustering():
     param['clustering_alpha_mlp'] = [1.0e-1, 1.0e-1]
     param['clustering_iter'] = 1
     param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = ''
+    param['test_folder'] = '../cifar10_model/CIFAR10_spatial_clustering_2017-Apr-09-15-35-04'
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -228,7 +228,7 @@ def CIFAR10_distilled():
         'merge_valid': False,
         'resume_training': False,
         'lambda': 0.9,  # determines the weight of the two objective functions
-        'temperature': 5,
+        'temperature': 10,
         'bat_size': 100,
         'img_height': 32,
         'img_width': 32,
@@ -237,22 +237,24 @@ def CIFAR10_distilled():
         'save_iter': 10000,
         'max_train_iter': 100000,
         'valid_iter': 1000,
-        'base_learn_rate': 1.0e-2,
+        'base_learn_rate': 5.0e-2,
         'learn_rate_decay_step': 2000,
-        'learn_rate_decay_rate': 0.85,
+        'learn_rate_decay_rate': 0.75,
         'label_size': 10,
         'momentum': 0.9,
         'weight_decay': 0.0,
         'init_std_cnn': [1.0e-2, 1.0e-2, 1.0e-2],
         'init_std_mlp': [1.0e-1, 1.0e-1],
-        'filter_shape': [[5, 5, 3, 32], [5, 5, 32, 32], [5, 5, 32, 64]],
+        'filter_shape': [[5, 5, 3, 32], [5, 5, 32, 16], [5, 5, 16, 32]],
         'filter_stride': [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
         'pool_func': ['max', 'avg', 'avg'],
         'pool_size': [[1, 3, 3, 1], [1, 3, 3, 1], [1, 3, 3, 1]],
         'pool_stride': [[1, 2, 2, 1], [1, 2, 2, 1], [1, 2, 2, 1]],
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
-        'dims_mlp': [64, 10, 1024],
+        'dims_mlp': [64, 10, 512],
+        'test_model_name': 'distilled_snapshot_0060000.ckpt',
+        'test_folder': '../cifar10_model/CIFAR10_distilled_2017-Apr-10-23-06-49'
     }
 
     if param['resume_training']:

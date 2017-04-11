@@ -16,8 +16,9 @@ def baseline_model(param):
         device = param['device']
 
     with tf.device(device):
-        input_images = tf.placeholder(tf.float32, [None, param['img_height'], param[
-                                      'img_width'], param['img_channel']])
+        input_images = tf.placeholder(
+            tf.float32, [None, param['img_height'], param['img_width'],
+                         param['img_channel']])
         input_labels = tf.placeholder(tf.int32, [None])
 
         ops['input_images'] = input_images
@@ -56,12 +57,15 @@ def baseline_model(param):
 
         # setting optimization
         global_step = tf.Variable(0.0, trainable=False)
-        learn_rate = tf.train.exponential_decay(param['base_learn_rate'], global_step, param[
-                                                'learn_rate_decay_step'], param['learn_rate_decay_rate'], staircase=True)
+        learn_rate = tf.train.exponential_decay(
+            param['base_learn_rate'], global_step,
+            param['learn_rate_decay_step'], param['learn_rate_decay_rate'],
+            staircase=True)
 
         # plain optimizer
-        ops['train_step'] = tf.train.MomentumOptimizer(learning_rate=learn_rate, momentum=param[
-                                                       'momentum']).minimize(CE_loss, global_step=global_step)
+        ops['train_step'] = tf.train.MomentumOptimizer(
+            learning_rate=learn_rate, momentum=param['momentum']).minimize(
+            CE_loss, global_step=global_step)
 
     return ops
 

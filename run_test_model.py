@@ -45,7 +45,8 @@ def main():
     elif param['model_name'] == 'parsimonious':
         model_ops = clustering_model(param)
     elif param['model_name'] == 'distilled':
-        model_ops = distilled_model(param)
+        with tf.variable_scope('dist') as dist_var_scope:
+            model_ops = distilled_model(param)
     else:
         raise ValueError('Unsupported model name!')
 
