@@ -20,14 +20,17 @@ from mini_batch_iter import MiniBatchIterator
 
 def main():
     args = docopt(__doc__)
+    lambda_ = args['<lambda>']
+    temperature = args['<temperature>']
     param = getattr(cg, args['<distilled_model_id>'])(
-        lambda_=float(args['<lambda>']), temperature=float(args['<temperature>']))
+        lambda_=float(lambda_), temperature=float(temperature))
 
     if param['resume_training']:
         param['exp_id'] = param['resume_exp_id']
     else:
-        param['exp_id'] = args['<distilled_model_id>'] + '_' + \
-            time.strftime("%Y-%b-%d-%H-%M-%S")
+        param['exp_id'] = args['<distilled_model_id>'] + '_l' \
+                          + lambda_.replace('.', '-') + '_t' + temperature \
+                          + '_' + time.strftime("%Y-%b-%d-%H-%M-%S")
 
     param['save_folder'] = os.path.join(param['save_path'], param['exp_id'])
     param_cumb = getattr(cg, args['<cumbersome_model_id>'])()
