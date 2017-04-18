@@ -218,7 +218,7 @@ def CIFAR100_channel_clustering():
     return param
 
 
-def CIFAR10_distilled():
+def CIFAR10_distilled(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
         'data_folder': '../cifar-10-batches-py',  # the path of unzipped CIFAR10 data
@@ -227,8 +227,8 @@ def CIFAR10_distilled():
         'model_name': 'distilled',
         'merge_valid': False,
         'resume_training': False,
-        'lambda': 0.9,  # determines the weight of the two objective functions
-        'temperature': 10,
+        'lambda': lambda_,  # determines the weight of the two objective functions
+        'temperature': temperature,
         'bat_size': 100,
         'img_height': 32,
         'img_width': 32,

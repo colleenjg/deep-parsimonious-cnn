@@ -1,7 +1,7 @@
 """run_distill_model.py
 
 Usage:
-  run_train_model.py <distilled_model_id> <cumbersome_model_id>
+  run_train_model.py <distilled_model_id> <cumbersome_model_id> <lambda> <temperature>
 """
 import exp_config as cg
 import math
@@ -20,7 +20,8 @@ from mini_batch_iter import MiniBatchIterator
 
 def main():
     args = docopt(__doc__)
-    param = getattr(cg, args['<distilled_model_id>'])()
+    param = getattr(cg, args['<distilled_model_id>'])(
+        lambda_=float(args['<lambda>']), temperature=float(args['<temperature>']))
 
     if param['resume_training']:
         param['exp_id'] = param['resume_exp_id']
