@@ -1,7 +1,7 @@
 """run_distill_model.py
 
 Usage:
-  run_train_model.py <distilled_model_id> <cumbersome_model_id> <lambda> <temperature>
+  run_distill_model.py <distilled_model_id> <cumbersome_model_id> <lambda> <temperature>
 """
 import exp_config as cg
 import math
