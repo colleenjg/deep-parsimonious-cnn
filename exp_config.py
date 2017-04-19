@@ -67,7 +67,7 @@ def CIFAR10_sample_clustering():
     param['clustering_alpha_mlp'] = [1.0e-1, 1.0e-1]
     param['clustering_iter'] = 1
     param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = ''  # the path of your testing model
+    param['test_folder'] = '../cifar10_model/CIFAR10_sample_clustering_2017-Apr-09-15-34-05'  # the path of your testing model
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -144,13 +144,13 @@ def CIFAR100_sample_clustering():
     param['num_cluster_cnn'] = [100, 100, 100]
     param['clustering_type_cnn'] = ['sample', 'sample', 'sample']
     param['clustering_shape_cnn'] = [[100, 32768], [100, 8192], [100, 4096]]
-    param['clustering_alpha_cnn'] = [0.0e+0, 0.0e+0, 0.0e+0]
+    param['clustering_alpha_cnn'] = [1.0e+0, 1.0e+0, 1.0e+0]
     param['num_cluster_mlp'] = [100, None]
     param['clustering_shape_mlp'] = [[100, 64], None]
-    param['clustering_alpha_mlp'] = [0.0e+0, None]
+    param['clustering_alpha_mlp'] = [1.0e+0, None]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0050000.ckpt'
-    param['test_folder'] = ''
+    param['test_model_name'] = 'parsimonious_snapshot_0070000.ckpt'
+    param['test_folder'] = '../cifar10_model/CIFAR100_sample_clustering_2017-Apr-09-15-37-02'
     param['resume_training'] = False
 
     if param['resume_training']:

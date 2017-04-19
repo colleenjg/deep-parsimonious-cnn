@@ -382,23 +382,26 @@ class CNN_cluster(object):
                         embedding, [-1, self.clustering_shape[ii][1]])
 
                     embeddings += [embedding]
-                    clustering_ops += [kmeans_clustering(embedding, self.cluster_center[
-                                                         ii], self.cluster_label[ii], self.num_cluster[ii], eta)]
+                    clustering_ops += [kmeans_clustering(
+                        embedding, self.cluster_center[ii],
+                        self.cluster_label[ii], self.num_cluster[ii], eta)]
 
                     sample_center = tf.stop_gradient(
                         tf.gather(self.cluster_center[ii], self.cluster_label[ii]))
-                    reg_ops += [tf.reduce_mean(tf.square(embedding -
-                                                         sample_center)) * self.alpha[ii] / 2.0]
+                    reg_ops += [tf.reduce_mean(
+                        tf.square(embedding - sample_center)) * self.alpha[ii] / 2.0]
 
-                    reset_ops += [tf.scatter_update(self.cluster_center[ii], idx_center[
-                        ii], tf.gather(embedding, idx_sample[ii]))]
+                    reset_ops += [tf.scatter_update(
+                        self.cluster_center[ii], idx_center[ii],
+                        tf.gather(embedding, idx_sample[ii]))]
 
                 if self.act_func[ii] is not None:
                     h[ii] = self.act_func[ii](h[ii])
 
                 if self.pool_func[ii] is not None:
-                    h[ii] = self.pool_func[ii](h[ii], ksize=self.pooling['pool_size'][
-                                               ii], strides=self.pooling['pool_stride'][ii], padding='SAME')
+                    h[ii] = self.pool_func[ii](
+                        h[ii], ksize=self.pooling['pool_size'][ii],
+                        strides=self.pooling['pool_stride'][ii], padding='SAME')
 
         return h, embeddings, clustering_ops, reg_ops, reset_ops
 
@@ -420,7 +423,9 @@ class MLP_cluster(object):
         a function which outputs a list of N tensors, each is the hidden activation of one layer 
     """
 
-    def __init__(self, dims, clustering_shape, alpha, num_cluster, activation=None, add_bias=True, wd=None, init_weights=None, init_std=None, scope='MLP'):
+    def __init__(self, dims, clustering_shape, alpha, num_cluster,
+                 activation=None, add_bias=True, wd=None, init_weights=None,
+                 init_std=None, scope='MLP'):
         num_layer = len(dims) - 1
         self.num_layer = num_layer
         self.w = [None] * num_layer
@@ -449,10 +454,13 @@ class MLP_cluster(object):
                     if init_weights and init_weights[ii] is not None:
                         self.w[ii] = init_weights[ii]['w']
                     else:
-                        self.w[ii] = weight_variable([dim_in, dim_out], init_method='truncated_normal', init_param={
-                                                     'mean': 0.0, 'stddev': init_std[ii]}, wd=wd, name='w')
+                        self.w[ii] = weight_variable(
+                            [dim_in, dim_out], init_method='truncated_normal',
+                            init_param={'mean': 0.0, 'stddev': init_std[ii]},
+                            wd=wd, name='w')
 
-                    print 'MLP weight size in layer {}: {}'.format(ii, [dim_in, dim_out])
+                    print 'MLP weight size in layer {}: {}'.format(
+                        ii, [dim_in, dim_out])
 
                     if clustering_shape[ii]:
                         self.cluster_center[ii] = weight_variable(
@@ -463,20 +471,26 @@ class MLP_cluster(object):
 
                         if clustering_shape[ii][0] < num_cluster[ii]:
                             random_init_label = np.random.choice(
-                                num_cluster[ii], clustering_shape[ii][0], replace=False)
+                                num_cluster[ii], clustering_shape[ii][0],
+                                replace=False)
                         else:
-                            random_init_label = np.concatenate([np.random.permutation(num_cluster[ii]), np.random.choice(
-                                num_cluster[ii], clustering_shape[ii][0] - num_cluster[ii])])
+                            random_init_label = np.concatenate(
+                                [np.random.permutation(num_cluster[ii]),
+                                 np.random.choice(
+                                     num_cluster[ii],
+                                     clustering_shape[ii][0] - num_cluster[ii])])
 
                         self.cluster_label[ii] = tf.Variable(
-                            random_init_label, name='cluster_label', trainable=False, dtype=tf.int64)
+                            random_init_label, name='cluster_label',
+                            trainable=False, dtype=tf.int64)
 
                     if add_bias:
                         if init_weights and init_weights[ii] is not None:
                             self.b[ii] = init_weights[ii]['b']
                         else:
-                            self.b[ii] = weight_variable([dim_out], init_method='constant', init_param={
-                                                         'val': 0.0}, wd=wd, name='b')
+                            self.b[ii] = weight_variable(
+                                [dim_out], init_method='constant',
+                                init_param={'val': 0.0}, wd=wd, name='b')
 
                         print 'MLP bias size in layer {}: {}'.format(ii, dim_out)
 
