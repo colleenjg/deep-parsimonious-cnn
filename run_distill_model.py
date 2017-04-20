@@ -59,7 +59,7 @@ def main():
         for key, value in param.iteritems():
             f.write('{}: {}\n'.format(key, value))
 
-    if param['model_name'] == 'hybrid':
+    if param['model_name'] in ['hybrid_spatial', 'hybrid_sample']:
         param['num_layer_cnn'] = len(
             [xx for xx in param['num_cluster_cnn'] if xx])
         param['num_layer_mlp'] = len(
@@ -103,7 +103,7 @@ def main():
         var_list = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
                                       scope='dist')
         sess.run(tf.variables_initializer(var_list))
-    elif param['model_name'] == 'hybrid':
+    elif param['model_name'] in ['hybrid_spatial', 'hybrid_sample']:
         with tf.variable_scope('hybrid') as hybrid_var_scope:
             model_ops = hybrid_model(param)
         var_list = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
@@ -164,7 +164,7 @@ def main():
 
             loss = train_results['loss']
 
-        elif param['model_name'] == 'hybrid':
+        elif param['model_name'] in ['hybrid_spatial', 'hybrid_sample']:
             feed_data[model_ops['input_eta']] = param['eta']
 
             # deal with drifted clusters
@@ -211,7 +211,7 @@ def main():
             disp_str = 'Train Step = {:06d} || CE loss = {:e}'.format(
                 train_iter + 1, loss)
 
-            if param['model_name'] == 'hybrid':
+            if param['model_name'] in ['hybrid_spatial', 'hybrid_sample']:
                 disp_str += ' || Clustering '
                 for ii in xrange(num_layer_reg):
                     disp_str += 'Reg_{:d} = {:e} '.format(ii + 1, reg_val[ii])

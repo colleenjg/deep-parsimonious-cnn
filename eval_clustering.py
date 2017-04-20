@@ -131,8 +131,8 @@ def main():
         cluster_center = sess.run(model_ops['cluster_center'])
 
     else:
-        num_layer_cnn = len(param['num_cluster_cnn'])
-        num_layer_mlp = len(param['num_cluster_mlp'])
+        num_layer_cnn = len(param['act_func_cnn'])
+        num_layer_mlp = len(param['act_func_mlp'])
         num_layer_reg = num_layer_cnn + num_layer_mlp
         cluster_center = [None] * num_layer_reg
 

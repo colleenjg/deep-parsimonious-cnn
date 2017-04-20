@@ -15,7 +15,8 @@ import cPickle as pickle
 from docopt import docopt
 from mini_batch_iter import MiniBatchIterator
 from CIFAR_input import read_CIFAR10, read_CIFAR100
-from CIFAR_models import baseline_model, clustering_model, distilled_model
+from CIFAR_models import (baseline_model, clustering_model, distilled_model,
+                          hybrid_model)
 
 
 def main():
@@ -47,6 +48,9 @@ def main():
     elif param['model_name'] == 'distilled':
         with tf.variable_scope('dist') as dist_var_scope:
             model_ops = distilled_model(param)
+    elif param['model_name'] in ['hybrid_spatial', 'hybrid_sample']:
+        with tf.variable_scope('hybrid') as dist_var_scope:
+            model_ops = hybrid_model(param)
     else:
         raise ValueError('Unsupported model name!')
 
