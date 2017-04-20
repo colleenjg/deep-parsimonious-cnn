@@ -49,6 +49,8 @@ def CIFAR100_baseline():
     param['label_size'] = 100
     param['init_std_cnn'] = [1.0e-1, 1.0e-1, 1.0e-1]
     param['dims_mlp'] = [64, 100, 1024]
+    param['test_model_name'] = 'baseline_snapshot_0010000.ckpt'
+    param['test_folder'] = '../cifar10_model/CIFAR100_baseline_2017-Apr-08-19-50-52'
 
     return param
 
@@ -253,8 +255,8 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'distilled_snapshot_0060000.ckpt',
-        'test_folder': '../cifar10_model/CIFAR10_distilled_2017-Apr-10-23-06-49'
+        'test_model_name': 'distilled_snapshot_0050000.ckpt',
+        'test_folder': '../cifar10_model/CIFAR10_distilled_l0-8_t10_2017-Apr-18-17-26-29'
     }
 
     if param['resume_training']:
@@ -264,5 +266,58 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
         param['resume_step'] = 50000
         param['resume_exp_id'] = ''
         param['resume_model_name'] = 'distilled_snapshot_0010000.ckpt'
+
+    return param
+
+
+def CIFAR10_hybrid(lambda_=0.9, temperature=10):
+    param = {
+        'device': '/gpu:0',
+        'data_folder': '../cifar-10-batches-py', # the path of unzipped CIFAR10 data
+        'save_path': '../cifar10_model',  # the path to save your model
+        'dataset_name': 'CIFAR10',
+        'model_name': 'hybrid',
+        'merge_valid': False,
+        'resume_training': False,
+        'lambda': lambda_, # determines the weight of the two objective functions
+        'temperature': temperature,
+        'bat_size': 100,
+        'img_height': 32,
+        'img_width': 32,
+        'img_channel': 3,
+        'disp_iter': 100,
+        'save_iter': 10000,
+        'max_train_iter': 100000,
+        'valid_iter': 1000,
+        'base_learn_rate': 5.0e-2,
+        'learn_rate_decay_step': 2000,
+        'learn_rate_decay_rate': 0.75,
+        'label_size': 10,
+        'momentum': 0.9,
+        'weight_decay': 0.0,
+        'init_std_cnn': [1.0e-2, 1.0e-2, 1.0e-2],
+        'init_std_mlp': [1.0e-1, 1.0e-1],
+        'filter_shape': [[5, 5, 3, 32], [5, 5, 32, 16], [5, 5, 16, 32]],
+        'filter_stride': [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
+        'pool_func': ['max', 'avg', 'avg'],
+        'pool_size': [[1, 3, 3, 1], [1, 3, 3, 1], [1, 3, 3, 1]],
+        'pool_stride': [[1, 2, 2, 1], [1, 2, 2, 1], [1, 2, 2, 1]],
+        'act_func_cnn': ['relu'] * 3,
+        'act_func_mlp': [None] * 2,
+        'dims_mlp': [64, 10, 512],
+        'test_model_name': 'distilled_snapshot_0050000.ckpt',
+        'test_folder': '../cifar10_model/CIFAR10_distilled_l0-8_t10_2017-Apr-18-17-26-29',
+        'eta': 0.1,
+
+        # clustering fields
+        'num_cluster_cnn': [100, 100, 100],
+        'clustering_type_cnn': ['sample', 'sample', 'sample'],
+        'clustering_shape_cnn': [[100, 32768], [100, 4096], [100, 2048]],
+        'clustering_alpha_cnn': [1.0e-1, 1.0e-1, 1.0e-1],
+        'num_cluster_mlp': [100, 100],
+        'clustering_shape_mlp': [[100, 64], [100, 10]],
+        'clustering_alpha_mlp': [1.0e-1, 1.0e-1],
+        'clustering_iter': 1
+    }
 
     return param
