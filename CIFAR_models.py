@@ -349,9 +349,6 @@ def hybrid_model(param):
         scaled_logits = tf.nn.softmax(logits)
         ops['scaled_logits'] = scaled_logits
 
-        embedding_cnn = feat_map
-        ops['embeddings'] = embedding_cnn + embedding_mlp
-
         source_model_logits = tf.placeholder(tf.float32, shape=logits.shape)
         ops['source_model_logits'] = source_model_logits
 
