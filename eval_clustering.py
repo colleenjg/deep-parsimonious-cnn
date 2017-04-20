@@ -14,7 +14,7 @@ import exp_config as cg
 from docopt import docopt
 from mini_batch_iter import MiniBatchIterator
 from CIFAR_input import read_CIFAR10, read_CIFAR100
-from CIFAR_models import baseline_model, clustering_model
+from CIFAR_models import baseline_model, clustering_model, distilled_model
 from scipy.cluster.vq import kmeans2
 from scipy.spatial import distance
 
@@ -93,6 +93,9 @@ def main():
         model_ops = baseline_model(param)
     elif param['model_name'] == 'parsimonious':
         model_ops = clustering_model(param)
+    elif param['model_name'] == 'distilled':
+        with tf.variable_scope('dist') as dist_var_scope:
+            model_ops = distilled_model(param)
     else:
         raise ValueError('Unsupported model name!')
 
@@ -107,8 +110,9 @@ def main():
 
     num_train_img = input_data['train_img'].shape[0]
     max_test_iter = int(math.ceil(num_train_img / param['bat_size']))
-    test_iterator = MiniBatchIterator(idx_start=0, bat_size=param[
-                                      'bat_size'], num_sample=num_train_img, train_phase=False, is_permute=False)
+    test_iterator = MiniBatchIterator(
+        idx_start=0, bat_size=param['bat_size'], num_sample=num_train_img,
+        train_phase=False, is_permute=False)
 
     config = tf.ConfigProto(allow_soft_placement=True)
     sess = tf.Session(config=config)
@@ -125,6 +129,12 @@ def main():
         num_layer_reg = param['num_layer_cnn'] + param['num_layer_mlp']
 
         cluster_center = sess.run(model_ops['cluster_center'])
+
+    else:
+        num_layer_cnn = len(param['num_cluster_cnn'])
+        num_layer_mlp = len(param['num_cluster_mlp'])
+        num_layer_reg = num_layer_cnn + num_layer_mlp
+        cluster_center = [None] * num_layer_reg
 
     embeddings = [[] for _ in xrange(num_layer_reg)]
 
