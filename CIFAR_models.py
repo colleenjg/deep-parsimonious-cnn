@@ -252,8 +252,12 @@ def distilled_model(param):
             tf.nn.sparse_softmax_cross_entropy_with_logits(
                 logits=logits, labels=input_labels))
 
+        # weighting coefficient for soft and hard targets
         lambda_ = param['lambda']
-        loss = lambda_ * soft_objective + (1 - lambda_) * hard_objective
+        soft_objective = tf.scalar_mul(lambda_, soft_objective)
+        hard_objective = tf.scalar_mul((1 - lambda_), hard_objective)
+
+        loss = soft_objective + hard_objective
 
         ops['loss'] = loss
 
@@ -264,11 +268,27 @@ def distilled_model(param):
             param['learn_rate_decay_step'], param['learn_rate_decay_rate'],
             staircase=True)
 
-        # plain optimizer
-        ops['train_step'] = tf.train.MomentumOptimizer(
+        optimizer = tf.train.MomentumOptimizer(
             learning_rate=learn_rate,
-            momentum=param['momentum']).minimize(
-            loss, global_step=global_step)
+            momentum=param['momentum'])
+
+        # gradients from soft targets multiplied by T^2 as recommended
+        grads_and_vars_soft = optimizer.compute_gradients(soft_objective)
+        grads_and_vars_soft_scaled = []
+        for grad, var in grads_and_vars_soft:
+            if grad is None:
+                grads_and_vars_soft_scaled.append((grad, var))
+            else:
+                grads_and_vars_soft_scaled.append(
+                    (tf.scalar_mul(temperature**2, grad), var))
+
+        grads_and_vars_hard = optimizer.compute_gradients(hard_objective)
+
+        grads_and_vars = list(
+            set(grads_and_vars_soft_scaled + grads_and_vars_hard))
+
+        ops['train_step'] = optimizer.apply_gradients(
+            grads_and_vars, global_step=global_step)
 
     return ops
 
@@ -365,7 +385,10 @@ def hybrid_model(param):
                 logits=logits, labels=input_labels))
 
         lambda_ = param['lambda']
-        loss = lambda_ * soft_objective + (1 - lambda_) * hard_objective
+        soft_objective = tf.scalar_mul(lambda_, soft_objective)
+        hard_objective = tf.scalar_mul((1 - lambda_), hard_objective)
+
+        loss = soft_objective + hard_objective
 
         ops['loss'] = loss
 
@@ -395,10 +418,26 @@ def hybrid_model(param):
             param['learn_rate_decay_step'], param['learn_rate_decay_rate'],
             staircase=True)
 
-        # plain optimizer
-        ops['train_step'] = tf.train.MomentumOptimizer(
+        optimizer = tf.train.MomentumOptimizer(
             learning_rate=learn_rate,
-            momentum=param['momentum']).minimize(
-            loss + reg_term, global_step=global_step)
+            momentum=param['momentum'])
+
+        # gradients from soft targets multiplied by T^2 as recommended
+        grads_and_vars_soft = optimizer.compute_gradients(soft_objective)
+        grads_and_vars_soft_scaled = []
+        for grad, var in grads_and_vars_soft:
+            if grad is None:
+                grads_and_vars_soft_scaled.append((grad, var))
+            else:
+                grads_and_vars_soft_scaled.append(
+                    (tf.scalar_mul(temperature ** 2, grad), var))
+
+        grads_and_vars_hard = optimizer.compute_gradients(hard_objective)
+
+        grads_and_vars = list(
+            set(grads_and_vars_soft_scaled + grads_and_vars_hard))
+
+        ops['train_step'] = optimizer.apply_gradients(
+            grads_and_vars, global_step=global_step)
 
     return ops
