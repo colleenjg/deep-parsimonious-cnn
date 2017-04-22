@@ -239,7 +239,7 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
         'save_iter': 10000,
         'max_train_iter': 100000,
         'valid_iter': 1000,
-        'base_learn_rate': 5.0e-2,
+        'base_learn_rate': 1.0e-3,
         'learn_rate_decay_step': 2000,
         'learn_rate_decay_rate': 0.75,
         'label_size': 10,
@@ -289,7 +289,7 @@ def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
         'save_iter': 10000,
         'max_train_iter': 100000,
         'valid_iter': 1000,
-        'base_learn_rate': 5.0e-2,
+        'base_learn_rate': 1.0e-3,
         'learn_rate_decay_step': 2000,
         'learn_rate_decay_rate': 0.75,
         'label_size': 10,
@@ -305,8 +305,8 @@ def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'hybrid_snapshot_0070000.ckpt',
-        'test_folder': '../cifar10_model/CIFAR10_hybrid-baseline_l0-9_t10_2017-Apr-19-22-11-27',
+        'test_model_name': 'hybrid_sample_snapshot_0060000.ckpt',
+        'test_folder': '../cifar10_model/CIFAR10_hybrid_sample_l0-9_t5_2017-Apr-20-18-31-36',
         'eta': 0.1,
 
         # clustering fields
@@ -342,7 +342,7 @@ def CIFAR10_hybrid_spatial(lambda_=0.9, temperature=10):
         'save_iter': 10000,
         'max_train_iter': 100000,
         'valid_iter': 1000,
-        'base_learn_rate': 5.0e-2,
+        'base_learn_rate': 1.0e-3,
         'learn_rate_decay_step': 2000,
         'learn_rate_decay_rate': 0.75,
         'label_size': 10,
@@ -358,8 +358,8 @@ def CIFAR10_hybrid_spatial(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'hybrid_snapshot_0070000.ckpt',
-        'test_folder': '../cifar10_model/CIFAR10_hybrid-baseline_l0-9_t10_2017-Apr-19-22-11-27',
+        'test_model_name': 'hybrid_spatial_snapshot_0070000.ckpt',
+        'test_folder': '../cifar10_model/CIFAR10_hybrid_spatial_l0-9_t5_2017-Apr-20-15-41-46',
         'eta': 0.1,
 
         # clustering fields
