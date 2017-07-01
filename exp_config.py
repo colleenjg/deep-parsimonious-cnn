@@ -35,7 +35,7 @@ def CIFAR10_baseline():
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 1024],
 
-        'test_model_name': 'baseline_snapshot_0060000.ckpt',
+        'test_model_name': 'baseline_snapshot_0080000.ckpt',
         'test_folder': '../cifar10_model/CIFAR10_baseline_2017-Apr-19-22-33-15'  # the path of your testing model
     }
 
@@ -255,8 +255,9 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'distilled_snapshot_0020000.ckpt',
-        'test_folder': '../cifar10_model/CIFAR10_distilled-baseline_l0-9_t5_2017-Apr-20-11-26-01'
+
+        'test_model_name': 'distilled_snapshot_0040000.ckpt',
+        'test_folder': '../cifar10_model/CIFAR10_distilled-sample_clustering_l0-9_t5_2017-Apr-18-22-04-22'
     }
 
     if param['resume_training']:
@@ -374,4 +375,3 @@ def CIFAR10_hybrid_spatial(lambda_=0.9, temperature=10):
     }
 
     return param
-    

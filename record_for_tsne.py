@@ -118,17 +118,17 @@ def main():
 
             embeddings[ii] += [ee]
 
-
     for ii in xrange(num_layer_reg):
         if ii < 3:
             continue
 
         embeddings[ii] = np.concatenate(embeddings[ii], axis=0)
+        labels = labels.astype(np.int64)
         labels = labels.reshape((-1,1))
-        embeddings_labelled = np.concatenate((embeddings[ii], labels), axis = 1)
+        embeddings_labelled = np.concatenate((labels, embeddings[ii]), axis = 1)
         my_df = pd.DataFrame(embeddings_labelled)
         layer = ii+1
-        my_df.to_csv('Activations_layer_%d.txt' % layer, index=False, header=False)
+        my_df.to_csv('Activations_layer_%d_distilled_sample_clustering_model_snap4.txt' % layer, index=False, header=False)
         print('File with activations and labels generated')
 
 
