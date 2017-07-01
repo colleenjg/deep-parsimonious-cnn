@@ -224,7 +224,7 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
         'data_folder': '../cifar-10-batches-py',  # the path of unzipped CIFAR10 data
-        'save_path': '../cifar10_model',  # the path to save your model
+        'save_path': '../cifar10_model/CIFAR10_distilled_2017-Apr-10-23-06-49',  # the path to save your model
         'dataset_name': 'CIFAR10',
         'model_name': 'distilled',
         'merge_valid': False,
@@ -374,5 +374,4 @@ def CIFAR10_hybrid_spatial(lambda_=0.9, temperature=10):
     }
 
     return param
-
-
+    
