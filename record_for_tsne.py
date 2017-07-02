@@ -158,9 +158,9 @@ def main():
         layer = ii+1
         model_name = str(args['<exp_id>'])
 
-        # if running on a model that was distilled from a clustered model
-        # (e.g., sample clustered), must manually add this
-        model_name = model_name + '_sample'
+        # # if running on a model that was distilled from a clustered model
+        # # (e.g., sample clustered), must manually add this
+        # model_name = model_name + '_sample'
 
 
         # get the snapshot nbr
