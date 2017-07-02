@@ -4,7 +4,7 @@
 def CIFAR10_baseline():
     param = {
         'device': '/gpu:0',
-        'data_folder': '../cifar_raw_data/cifar-10-batches-py',  # the path of unzipped CIFAR10 data
+        'data_folder': '../../Datasets/cifar_raw_data/cifar-10-batches-py',  # the path of unzipped CIFAR10 data
         'save_path': '../cifar_models_generated',  # the path to save your model
         'dataset_name': 'CIFAR10',
         'model_name': 'baseline',
@@ -44,7 +44,7 @@ def CIFAR10_baseline():
 def CIFAR100_baseline():
     param = CIFAR10_baseline()
     param['dataset_name'] = 'CIFAR100'
-    param['data_folder'] = '../cifar_raw_data/cifar-100-python'  # the path of unzipped CIFAR100 data
+    param['data_folder'] = '../../Datasets/cifar_raw_data/cifar-100-python'  # the path of unzipped CIFAR100 data
     param['label_size'] = 100
     param['init_std_cnn'] = [1.0e-1, 1.0e-1, 1.0e-1]
     param['dims_mlp'] = [64, 100, 1024]
@@ -222,8 +222,8 @@ def CIFAR100_channel_clustering():
 def CIFAR10_distilled(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
-        'data_folder': '../cifar_raw_data/cifar-10-batches-py',  # the path of unzipped CIFAR10 data
-        'save_path': '../cifar_models_generated/CIFAR10_distilled_2017-Apr-10-23-06-49',  # the path to save your model
+        'data_folder': '../../Datasets/cifar_raw_data/cifar-10-batches-py',  # the path of unzipped CIFAR10 data
+        'save_path': '../cifar_models_generated',  # the path to save your model
         'dataset_name': 'CIFAR10',
         'model_name': 'distilled',
         'merge_valid': False,
@@ -255,8 +255,8 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
 
-        'test_model_name': 'distilled_snapshot_0040000.ckpt',
-        'test_folder': '../cifar_models_generated/CIFAR10_distilled-sample_clustering_l0-9_t5_2017-Apr-18-22-04-22'
+        'test_model_name': 'distilled_snapshot_0020000.ckpt',
+        'test_folder': '../cifar_models_generated/CIFAR10_distilled_l0-9_t20_2017-Apr-18-22-05-37'
     }
 
     if param['resume_training']:
@@ -273,7 +273,7 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
 def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
-        'data_folder': '../cifar_raw_data/cifar-10-batches-py', # the path of unzipped CIFAR10 data
+        'data_folder': '../../Datasets/cifar_raw_data/cifar-10-batches-py', # the path of unzipped CIFAR10 data
         'save_path': '../cifar_models_generated',  # the path to save your model
         'dataset_name': 'CIFAR10',
         'model_name': 'hybrid_sample',
@@ -305,8 +305,8 @@ def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'hybrid_sample_snapshot_0060000.ckpt',
-        'test_folder': '../cifar_models_generated/CIFAR10_hybrid_sample_l0-9_t5_2017-Apr-20-18-31-36',
+        'test_model_name': 'distilled_snapshot_0040000.ckpt',
+        'test_folder': '../cifar_models_generated/CIFAR10_distilled-sample_clustering_l0-9_t5_2017-Apr-18-22-04-22',
         'eta': 0.1,
 
         # clustering fields
@@ -326,7 +326,7 @@ def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
 def CIFAR10_hybrid_spatial(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
-        'data_folder': '../cifar_raw_data/cifar-10-batches-py', # the path of unzipped CIFAR10 data
+        'data_folder': '../../Datasets/cifar_raw_data/cifar-10-batches-py', # the path of unzipped CIFAR10 data
         'save_path': '../cifar_models_generated',  # the path to save your model
         'dataset_name': 'CIFAR10',
         'model_name': 'hybrid_spatial',

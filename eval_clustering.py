@@ -94,11 +94,15 @@ def main():
         model_ops = baseline_model(param)
     elif param['model_name'] == 'parsimonious':
         model_ops = clustering_model(param)
+
+    # # For models generated before 2017-Apr-19, should use
+    # elif param['model_name'] in ['hybrid_spatial',
+    #                               'hybrid_sample', 'distilled']:
     elif param['model_name'] == 'distilled':
         with tf.variable_scope('dist') as dist_var_scope:
             model_ops = distilled_model(param)
     elif param['model_name'] in ['hybrid_spatial', 'hybrid_sample']:
-        with tf.variable_scope('hybrid') as dist_var_scope:
+        with tf.variable_scope('hybrid') as hybrid_var_scope:
             model_ops = hybrid_model(param)
     else:
         raise ValueError('Unsupported model name!')

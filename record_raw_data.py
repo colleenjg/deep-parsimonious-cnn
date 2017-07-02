@@ -6,6 +6,8 @@ version in which the data for all images is shuffled, except labels.
 
 Currently only supports CIFAR10 models (baseline, distilled, etc.) as args
 
+Choose directory to save in.
+
 Usage:
   record_raw_data.py <exp_id>
 """
@@ -72,8 +74,8 @@ def main():
         array_shuffled = vector_shuffled.reshape(all_img.shape)
         all_img_shuffled = np.empty(all_img.shape)
 
-        print('Shuffling array generated.' +
-              'Please wait while image data is shuffled super inefficiently.')
+        print('Shuffling array generated. ' +
+              'Please wait while image data is shuffled (inefficient).')
 
         # shuffle all values (except labels) in the CIFAR10 combined dataset
         for x in xrange(total_nbr):
@@ -99,7 +101,8 @@ def main():
         my_df_shuffled = pd.DataFrame(all_info_shuffled)
 
         # export dataframes to run tsne, for example.
-        # file sizes are pretty big (500 MB-1GB)
+        # file sizes are pretty big (700 MB)
+        # choose directory to save in
         my_df.to_csv('../cifar_raw_data_modified/CIFAR10_images_labels.txt',
                      index=False, header=False)
         my_df_shuffled.to_csv('../cifar_raw_data_modified/CIFAR10_images_shuffled_labels.txt',

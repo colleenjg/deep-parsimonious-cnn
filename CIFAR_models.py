@@ -43,9 +43,9 @@ def baseline_model(param):
 
         # prediction model
         feat_map = CNN.run(input_images)
-        faet_map_MLP = tf.reshape(feat_map[-1], [-1, param['dims_mlp'][-1]])
-        # logits = MLP.run(faet_map_MLP)[-1]
-        embedding_mlp = MLP.run(faet_map_MLP)
+        feat_map_MLP = tf.reshape(feat_map[-1], [-1, param['dims_mlp'][-1]])
+        # logits = MLP.run(feat_map_MLP)[-1]
+        embedding_mlp = MLP.run(feat_map_MLP)
         logits = embedding_mlp[-1]
         ops['logits'] = logits
         scaled_logits = tf.nn.softmax(logits)
