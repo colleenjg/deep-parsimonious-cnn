@@ -6,6 +6,9 @@ the models.
 
 Choose directory to save in.
 
+Must uncomment a line if the model is distilled from a clustered model, so
+it appears in the file name.
+
 Usage:
   record_for_tsne.py <exp_id>
 """
@@ -48,10 +51,6 @@ def main():
         model_ops = baseline_model(param)
     elif param['model_name'] == 'parsimonious':
         model_ops = clustering_model(param)
-
-    # # For models generated before 2017-Apr-19, should use
-    # elif param['model_name'] in ['hybrid_spatial',
-    #                               'hybrid_sample', 'distilled']:
     elif param['model_name'] == 'distilled':
         with tf.variable_scope('dist') as dist_var_scope:
             model_ops = distilled_model(param)
@@ -158,6 +157,11 @@ def main():
         # retrieve information for file names
         layer = ii+1
         model_name = str(args['<exp_id>'])
+
+        # if running on a model that was distilled from a clustered model
+        # (e.g., sample clustered), must manually add this
+        model_name = model_name + '_sample'
+
 
         # get the snapshot nbr
         snap_nbr = re.findall('\d+', param['test_model_name'])[0].strip('0')

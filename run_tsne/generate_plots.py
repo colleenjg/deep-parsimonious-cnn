@@ -2,6 +2,8 @@
 
 Make multipanelled plots with t-SNE results for activations.
 
+Determine directories for t-SNE data.
+
 Usage:
   generate_plots.py
 """
@@ -69,11 +71,11 @@ def scatterplot(df, x, y, c, titles):
 
 if __name__ == '__main__':
 
-    # load dataframes
+    # determine directories from which to load t-SNE dataframes
     plot_base = load_activ_data(filename='../../t-SNE_results/values/Activations_layer_4_CIFAR10_baseline_model_snap_8_tsne_df.txt')
     plot_clust = load_activ_data(filename='../../t-SNE_results/values/Activations_layer_4_CIFAR10_sample_clustering_model_snap_6_tsne_df.txt')
     plot_base_dist = load_activ_data(filename='../../t-SNE_results/values/Activations_layer_4_CIFAR10_distilled_baseline_model_snap_2_tsne_df.txt')
-    plot_clust_dist = load_activ_data(filename='../../t-SNE_results/values/Activations_layer_4_CIFAR10_hybrid_sample_model_snap_4_tsne_df.txt')
+    plot_clust_dist = load_activ_data(filename='../../t-SNE_results/values/Activations_layer_4_CIFAR10_distilled_sample_model_snap_4_tsne_df.txt')
 
     tsne_dfs = [plot_base, plot_clust, plot_base_dist, plot_clust_dist]
     tsne_titles = ['Baseline', 'Sample-clustering', 'Distilled-baseline',

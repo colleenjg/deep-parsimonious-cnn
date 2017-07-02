@@ -4,7 +4,8 @@ This script exports a pandas dataframe containing all the CIFAR10 image data
 with labels, in which each image is one dimension. It also generates a shuffled
 version in which the data for all images is shuffled, except labels.
 
-Currently only supports CIFAR10 models (baseline, distilled, etc.) as args
+It can be run with any of the CIFAR10 models (baseline, distilled, etc.) to
+retrieve the same dataset.
 
 Choose directory to save in.
 

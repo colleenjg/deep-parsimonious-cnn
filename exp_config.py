@@ -35,8 +35,8 @@ def CIFAR10_baseline():
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 1024],
 
-        'test_model_name': 'baseline_snapshot_0080000.ckpt',
-        'test_folder': '../cifar_models_generated/CIFAR10_baseline_2017-Apr-19-22-33-15'  # the path of your testing model
+        'test_model_name': 'baseline_snapshot_0080000.ckpt', # the model to run tests on
+        'test_folder': '../cifar_models_generated/CIFAR10_baseline_2017-Apr-19-22-33-15'  # the path to the model to be tested
     }
 
     return param
@@ -67,8 +67,8 @@ def CIFAR10_sample_clustering():
     param['clustering_shape_mlp'] = [[100, 64], [100, 10]]
     param['clustering_alpha_mlp'] = [1.0e-1, 1.0e-1]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = '../cifar_models_generated/CIFAR10_sample_clustering_2017-Apr-09-15-34-05'  # the path of your testing model
+    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt' # the model to run tests on
+    param['test_folder'] = '../cifar_models_generated/CIFAR10_sample_clustering_2017-Apr-09-15-34-05'  # the path to the model to be tested
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -95,8 +95,8 @@ def CIFAR10_spatial_clustering():
     param['clustering_shape_mlp'] = [[100, 64], [100, 10]]
     param['clustering_alpha_mlp'] = [1.0e-1, 1.0e-1]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = '../cifar_models_generated/CIFAR10_spatial_clustering_2017-Apr-09-15-35-04'
+    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt' # the model to run tests on
+    param['test_folder'] = '../cifar_models_generated/CIFAR10_spatial_clustering_2017-Apr-09-15-35-04' # the path to the model to be tested
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -123,8 +123,8 @@ def CIFAR10_channel_clustering():
     param['clustering_shape_mlp'] = [[100, 64], [100, 10]]
     param['clustering_alpha_mlp'] = [1.0e-1, 1.0e-1]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = '../cifar_models_generated/CIFAR10_channel_clustering_2017-Apr-09-15-35-52'
+    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt' # the model to run tests on
+    param['test_folder'] = '../cifar_models_generated/CIFAR10_channel_clustering_2017-Apr-09-15-35-52' # the path to the model to be tested
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -150,8 +150,8 @@ def CIFAR100_sample_clustering():
     param['clustering_shape_mlp'] = [[100, 64], None]
     param['clustering_alpha_mlp'] = [1.0e+0, None]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0070000.ckpt'
-    param['test_folder'] = '../cifar_models_generated/CIFAR100_sample_clustering_2017-Apr-09-15-37-02'
+    param['test_model_name'] = 'parsimonious_snapshot_0070000.ckpt' # the model to run tests on
+    param['test_folder'] = '../cifar_models_generated/CIFAR100_sample_clustering_2017-Apr-09-15-37-02' # the path to the model to be tested
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -177,8 +177,8 @@ def CIFAR100_spatial_clustering():
     param['clustering_shape_mlp'] = [[100, 64], None]
     param['clustering_alpha_mlp'] = [1.0e+0, None]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = ''
+    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt' # the model to run tests on
+    param['test_folder'] = '' # the path to the model to be tested
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -204,8 +204,8 @@ def CIFAR100_channel_clustering():
     param['clustering_shape_mlp'] = [[100, 64], None]
     param['clustering_alpha_mlp'] = [1.0e+0, None]
     param['clustering_iter'] = 1
-    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt'
-    param['test_folder'] = ''
+    param['test_model_name'] = 'parsimonious_snapshot_0060000.ckpt' # the model to run tests on
+    param['test_folder'] = '' # the path to the model to be tested
     param['resume_training'] = False
 
     if param['resume_training']:
@@ -219,6 +219,7 @@ def CIFAR100_channel_clustering():
     return param
 
 
+# Includes model distilled from clustered models.
 def CIFAR10_distilled(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
@@ -254,9 +255,8 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-
-        'test_model_name': 'distilled_snapshot_0020000.ckpt',
-        'test_folder': '../cifar_models_generated/CIFAR10_distilled_l0-9_t20_2017-Apr-18-22-05-37'
+        'test_model_name': 'distilled_snapshot_0020000.ckpt', # the model to run tests on
+        'test_folder': '../cifar_models_generated/CIFAR10_distilled_l0-9_t20_2017-Apr-18-22-05-37' # the path to the model to be tested
     }
 
     if param['resume_training']:
@@ -270,6 +270,7 @@ def CIFAR10_distilled(lambda_=0.9, temperature=10):
     return param
 
 
+# Hybrid models apply clustering during distillation.
 def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
     param = {
         'device': '/gpu:0',
@@ -305,8 +306,8 @@ def CIFAR10_hybrid_sample(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'distilled_snapshot_0040000.ckpt',
-        'test_folder': '../cifar_models_generated/CIFAR10_distilled-sample_clustering_l0-9_t5_2017-Apr-18-22-04-22',
+        'test_model_name': '', # the model to run tests on
+        'test_folder': '', # the path to the model to be tested
         'eta': 0.1,
 
         # clustering fields
@@ -358,8 +359,8 @@ def CIFAR10_hybrid_spatial(lambda_=0.9, temperature=10):
         'act_func_cnn': ['relu'] * 3,
         'act_func_mlp': [None] * 2,
         'dims_mlp': [64, 10, 512],
-        'test_model_name': 'hybrid_spatial_snapshot_0070000.ckpt',
-        'test_folder': '../cifar_models_generated/CIFAR10_hybrid_spatial_l0-9_t5_2017-Apr-20-15-41-46',
+        'test_model_name': 'hybrid_spatial_snapshot_0070000.ckpt', # the model to run tests on
+        'test_folder': '../cifar_models_generated/CIFAR10_hybrid_spatial_l0-9_t5_2017-Apr-20-15-41-46', # the path to the model to be tested
         'eta': 0.1,
 
         # clustering fields

@@ -1,7 +1,7 @@
 """ run_tsne_and_plot.py
 
 This script runs t-SNE (https://github.com/lvdmaaten/bhtsne).
-Choose directory to save in (2x)
+Determine filename and directory to save in (2x, values and plots)
 
 Usage:
   run_tsne_and_plot.py
