@@ -25,7 +25,7 @@ The code here applies distillation to networks trained using the methods describ
   run `eval_clustering.py` passing `<exp_id>` (e.g., CIFAR10_baseline) as args.
 
 ### Record raw and shuffled CIFAR10 data for t-SNE
-  Determine directory to save in in `ecord_raw_data.py`
+  Determine directory to save in in `record_raw_data.py`
   run `record_raw_data.py` passing `<exp_id>` (e.g., CIFAR10_baseline) as args.
 
 ### Record activations for t-SNE
